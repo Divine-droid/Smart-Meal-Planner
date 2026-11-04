@@ -1,0 +1,6 @@
+requests
+streamlit
+pandas
+google-genai
+python-dotenv
+pytest
