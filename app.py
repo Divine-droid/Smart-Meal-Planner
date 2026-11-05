@@ -1,5 +1,30 @@
 # OWNER: ______
+"""
+WHAT THIS FILE DOES
+-------------------
+The user interface, built with Streamlit. It only DISPLAYS things and calls the other
+files - it should contain very little logic itself.
+
+HOW STREAMLIT WORKS (important!)
+--------------------------------
+Streamlit re-runs this whole file from top to bottom every time the user clicks a
+button or types something. Normal variables are therefore reset each time. To remember
+things between runs (like the meal plan) store them in st.session_state:
+
+    if "planner" not in st.session_state:
+        st.session_state.planner = MealPlanner()
+    planner = st.session_state.planner
+
+Useful widgets (see https://docs.streamlit.io):
+    st.text_input("Search")            st.radio("Search by", ["name", "ingredient", "category"])
+    st.button("Search")                st.selectbox("Day", ["Monday", "Tuesday", ...])
+    st.image(url)   st.write(text)     st.dataframe(list_of_dicts)
+    st.success()  st.warning()  st.error()      <- coloured messages
+
+RUN IT:  streamlit run app.py
+"""
 """Streamlit UI. Run with: streamlit run app.py"""
+
 from importlib import import_module
 
 try:

@@ -1,4 +1,16 @@
 # OWNER: ______
+"""
+WHAT THIS FILE DOES
+-------------------
+All FILE HANDLING lives here: saving and loading the meal plan, favourite recipes and
+shopping lists in the data/ folder.
+  * JSON  - for the meal plan and favourites (keeps nested data)
+  * CSV   - for the shopping list (opens in Excel)
+
+ERROR HANDLING RULE: reading a file that does not exist (or is damaged) must NOT crash
+the app. It should return a default value instead.
+"""
+
 """Save and load files in the data/ folder."""
 import json  # noqa: F401
 import csv   # noqa: F401

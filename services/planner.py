@@ -1,4 +1,22 @@
 # OWNER: ______
+"""
+WHAT THIS FILE DOES
+-------------------
+MealPlanner stores which recipes are planned for which day, plus the number of
+servings. The UI keeps ONE MealPlanner object and adds/removes meals on it.
+
+HOW THE DATA LOOKS
+------------------
+    self.plan = {
+        "Monday":  [Recipe(...), Recipe(...)],
+        "Tuesday": [Recipe(...)],
+    }
+
+SAVING: json can't store Recipe objects, so to_dict() converts everything to plain
+dictionaries (using recipe.to_dict()) and from_dict() rebuilds the objects
+(using Recipe.from_dict()). storage.py then writes/reads that dictionary as JSON.
+"""
+    
 """Multi-day meal plan."""
 from models.recipe import Recipe  # noqa: F401
 

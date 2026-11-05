@@ -1,4 +1,20 @@
 # OWNER: Team lead (DONE - do not edit without telling the lead)
+"""
+WHAT THIS FILE DOES
+-------------------
+Defines the two data containers the WHOLE app uses:
+  * Ingredient - one ingredient line, e.g. name="Rice", measure="2 cups"
+  * Recipe     - one meal with its ingredients and instructions
+
+Every other file (client, planner, shopping list, UI) passes Recipe objects around,
+so the field names here must not change.
+
+OOP CONCEPTS USED
+-----------------
+  * @dataclass       - Python writes __init__, __repr__ and __eq__ for us.
+  * @classmethod     - a method that builds an object (Recipe.from_api(...)) instead of
+                       needing an existing one.
+"""
 """Recipe data model. Every other module depends on these fields."""
 from dataclasses import asdict, dataclass, field
 from typing import Any
