@@ -36,7 +36,7 @@ except ModuleNotFoundError as exc:
 
 from services.mealdb_client import MealDBClient
 from services.planner import MealPlanner
-from services.shopping import ShoppingListGenerator
+from services.shopping_desc import ShoppingListGenerator
 from utils.parsing import parse_servings
 
 st.title("Smart Meal Planner")

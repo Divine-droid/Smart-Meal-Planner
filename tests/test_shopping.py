@@ -1,5 +1,5 @@
 from models.recipe import Recipe
-from services.shopping import ShoppingListGenerator, scale_quantity
+from services.shopping_desc import ShoppingListGenerator, scale_quantity
 
 
 def make(id_, *pairs):
