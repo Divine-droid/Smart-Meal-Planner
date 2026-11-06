@@ -11,13 +11,13 @@ def scale_quantity(qty, target_servings: int,
 
     if qty is None:
         return None
-
+      
     return qty * (target_servings / base_servings)
 
 
 class ShoppingListGenerator:
 
-    def generate(self, recipes: list, servings: int) -> list:
+    def generate(self, recipes: list[Any], servings: int) -> list[dict[str, Any]]:
         """Combine ingredients from multiple recipes."""
 
         if servings <= 0:
