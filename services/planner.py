@@ -34,15 +34,15 @@ class MealPlanner:
         """Remove a recipe from a day. Do nothing if it is not there."""
         raise NotImplementedError("TODO")
 
-    def all_recipes(self) -> list:
+    def all_recipes(self) -> list[Recipe]:
         """Flat list of every recipe in the plan (duplicates kept)."""
         raise NotImplementedError("TODO")
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, object]:
         """{"servings": 4, "plan": {"Monday": [recipe.to_dict(), ...]}}"""
         raise NotImplementedError("TODO")
 
     @classmethod
-    def from_dict(cls, data: dict) -> "MealPlanner":
+    def from_dict(cls, data: dict[str, object]) -> "MealPlanner":
         """Reverse of to_dict()."""
         raise NotImplementedError("TODO")

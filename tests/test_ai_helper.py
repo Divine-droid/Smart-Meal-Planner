@@ -1,7 +1,8 @@
 """Tests for AIHelper. uses a FAKE Gemini client, so no internet or API key is needed."""
+# pyright: reportMissingImports=false
 import json
 
-import pytest  
+import pytest
 
 from exceptions import APIRequestError
 from models.recipe import Recipe

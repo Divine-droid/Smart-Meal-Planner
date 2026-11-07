@@ -30,7 +30,7 @@ def load_json(filename: str, default=None):
     raise NotImplementedError("TODO")
 
 
-def save_shopping_csv(filename: str, items: list) -> str:
+def save_shopping_csv(filename: str, items: list[dict[str, object]]) -> str:
     """Write the shopping list (list of dicts from ShoppingListGenerator) to a CSV
     with columns: name, quantity, unit, note. Return the file path."""
     raise NotImplementedError("TODO")

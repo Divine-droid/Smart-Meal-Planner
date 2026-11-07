@@ -1,5 +1,10 @@
 from models.recipe import Recipe
-from services.shopping_desc import ShoppingListGenerator, scale_quantity
+from importlib import import_module
+from typing import Any
+
+shopping_list: Any = import_module("shopping")
+ShoppingListGenerator: Any = getattr(shopping_list, "ShoppingListGenerator")
+scale_quantity: Any = getattr(shopping_list, "scale_quantity")
 
 
 def make(id_, *pairs):

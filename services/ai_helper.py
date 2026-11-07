@@ -27,37 +27,43 @@ SETUP
   * Answers are cached in data/ai_cache.json by recipe id, so the same recipe never
     uses your free quota twice.
 """
-import json
 import importlib
+import json
 import os
 import re
-from typing import Any
+import time
+from typing import Optional
+
 from exceptions import APIRequestError
 from models.recipe import Recipe
 
 try:
     load_dotenv = importlib.import_module("dotenv").load_dotenv
-except ImportError:  # python-dotenv is optional; env vars still work without it
-    load_dotenv = None
+except ModuleNotFoundError:  # python-dotenv is optional; env vars still work without it
+    def load_dotenv() -> bool:
+        return False
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3.8-flash"
 CACHE_PATH = os.path.join("data", "ai_cache.json")
 VALID_DIFFICULTIES = ("Easy", "Medium", "Hard")
 MAX_INSTRUCTION_CHARS = 6000  # keep prompts small so requests stay fast and cheap
+RETRY_DELAYS = (1, 3)         # seconds to wait before the 2nd and 3rd try when Gemini is busy
 
 
 class AIHelper:
-    def __init__(self, api_key: str | None = None, model: str | None = None,
-                 cache_path: str = CACHE_PATH, client=None):
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None,
+                 cache_path: str = CACHE_PATH, client=None, retry_delays=RETRY_DELAYS):
         """Set up the Gemini client.
 
         api_key / model: optional overrides. Normally they come from the .env file.
         client: for tests only - pass a fake client so no real API call is made.
+        retry_delays: seconds to wait between retries when Gemini is temporarily busy.
         """
         if load_dotenv:
             load_dotenv()  # copies values from .env into environment variables
         self.model = model or os.getenv("GEMINI_MODEL") or DEFAULT_MODEL
         self.cache_path = cache_path
+        self.retry_delays = retry_delays
 
         if client is not None:  # used by the tests
             self.client = client
@@ -65,9 +71,13 @@ class AIHelper:
 
         key = api_key or os.getenv("GEMINI_API_KEY")
         if not key:
-            raise APIRequestError("Missing GEMINI_API_KEY. Put it in your .env file ""(copy .env.example to .env and add your key).")
+            raise APIRequestError(
+                "Missing GEMINI_API_KEY. Put it in your .env file "
+                "(copy .env.example to .env and add your key)."
+            )
         try:
-            genai: Any = importlib.import_module("google.genai")
+            # Import the SDK lazily so the rest of the app still works without the package.
+            genai = importlib.import_module("google.genai")
         except ImportError as e:
             raise APIRequestError(
                 "The google-genai package is not installed. Run: pip install google-genai"
@@ -76,13 +86,13 @@ class AIHelper:
 
     # ------------------------------------------------------------------ public
 
-    def enhance_recipe(self, recipe: Recipe, use_cache: bool = True) -> dict[str, Any]:
+    def enhance_recipe(self, recipe: Recipe, use_cache: bool = True) -> dict[str, object]:
         """Return {"steps": [...], "difficulty": "...", "substitutes": [...]} for a recipe.
 
         Raises APIRequestError if Gemini cannot be reached or returns unusable output.
         """
         # 1. Cache: if we already asked Gemini about this recipe, reuse the answer.
-        cache = self._load_cache() if use_cache else {}
+        cache: dict[str, dict[str, object]] = self._load_cache() if use_cache else {}
         if use_cache and recipe.id and recipe.id in cache:
             return cache[recipe.id]
 
@@ -137,24 +147,26 @@ Respond with ONLY a JSON object, no extra text, in exactly this shape:
 {{"steps": ["..."], "difficulty": "Easy", "substitutes": [{{"ingredient": "...", "substitute": "...", "reason": "..."}}]}}"""
 
     def _call_gemini(self, prompt: str) -> str:
-        """Send the prompt and return Gemini's raw text. Raises APIRequestError on failure."""
-        try:
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=prompt,
-                config={"response_mime_type": "application/json", "temperature": 0.3},
-            )
-        except Exception as e:  # the SDK can raise many kinds of errors
-            msg = str(e)
-            hint = ""
-            if "404" in msg or "NOT_FOUND" in msg:
-                hint = (f" The model '{self.model}' may no longer exist. Set GEMINI_MODEL in "
-                        "your .env to a current model name from Google AI Studio.")
-            elif "429" in msg or "RESOURCE_EXHAUSTED" in msg:
-                hint = " You may have hit the free quota. Wait a minute and try again."
-            elif "401" in msg or "403" in msg or "API key" in msg or "PERMISSION_DENIED" in msg:
-                hint = " Check that GEMINI_API_KEY in your .env is correct."
-            raise APIRequestError(f"Gemini request failed: {msg}{hint}") from e
+        """Send the prompt and return Gemini's raw text. Raises APIRequestError on failure.
+
+        If Gemini says it is temporarily busy (503 and similar), we wait a moment and try
+        again (see RETRY_DELAYS) before giving up. Other errors fail immediately.
+        """
+        response = None
+        for attempt in range(len(self.retry_delays) + 1):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config={"response_mime_type": "application/json", "temperature": 0.3},
+                )
+                break
+            except Exception as e:  # the SDK can raise many kinds of errors
+                msg = str(e)
+                if self._is_temporary(msg) and attempt < len(self.retry_delays):
+                    time.sleep(self.retry_delays[attempt])
+                    continue
+                raise APIRequestError(self._friendly_error(msg)) from e
 
         text = getattr(response, "text", None)
         if not text:
@@ -162,7 +174,27 @@ Respond with ONLY a JSON object, no extra text, in exactly this shape:
         return text
 
     @staticmethod
-    def _parse_json(text: str) -> dict[str, Any]:
+    def _is_temporary(msg: str) -> bool:
+        """True for errors that usually disappear if we simply try again."""
+        return bool(re.search(r"\b(500|502|503|504)\b", msg)) or any(
+            word in msg for word in ("UNAVAILABLE", "INTERNAL", "DEADLINE_EXCEEDED", "high demand")
+        )
+
+    def _friendly_error(self, msg: str) -> str:
+        """Turn a raw SDK error into one short sentence the user can act on."""
+        if "404" in msg or "NOT_FOUND" in msg:
+            return (f"The Gemini model '{self.model}' is not available. Set GEMINI_MODEL in your "
+                    ".env file to a current model name (see https://ai.google.dev/gemini-api/docs/models).")
+        if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+            return "You may have hit the free Gemini quota. Wait a minute and try again."
+        if "401" in msg or "403" in msg or "API key" in msg or "PERMISSION_DENIED" in msg:
+            return "Gemini rejected the request. Check that GEMINI_API_KEY in your .env is correct."
+        if self._is_temporary(msg):
+            return "Gemini is very busy right now (this is temporary). Wait a few seconds and press the button again."
+        return f"Gemini request failed: {msg[:300]}"
+
+    @staticmethod
+    def _parse_json(text: str) -> dict[str, object]:
         """Turn Gemini's text into a dict. Handles ```json fences and extra words around it."""
         cleaned = text.strip()
         cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE)
@@ -175,7 +207,7 @@ Respond with ONLY a JSON object, no extra text, in exactly this shape:
             raise ValueError(f"invalid JSON: {e}") from e
 
     @staticmethod
-    def _normalize(data: Any) -> dict[str, Any]:
+    def _normalize(data) -> dict[str, object]:
         """Make sure the dict has exactly the shape the app expects, whatever Gemini sent."""
         if not isinstance(data, dict):
             raise ValueError("reply is not a JSON object")
@@ -210,16 +242,17 @@ Respond with ONLY a JSON object, no extra text, in exactly this shape:
     # ------------------------------------------------------------------- cache
     # The cache is "best effort": if it cannot be read or written, the app still works.
 
-    def _load_cache(self) -> dict[str, Any]:
+    def _load_cache(self) -> dict[str, dict[str, object]]:
         try:
             with open(self.cache_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            return data if isinstance(data, dict) else {}
+            if isinstance(data, dict):
+                return {str(k): v for k, v in data.items() if isinstance(v, dict)}
+            return {}
         except (OSError, json.JSONDecodeError):
-            print(f"Warning: could not read cache from {self.cache_path}. Continuing without cache.")
             return {}
 
-    def _save_cache(self, cache: dict[str, Any]) -> None:
+    def _save_cache(self, cache: dict[str, dict[str, object]]) -> None:
         try:
             folder = os.path.dirname(self.cache_path)
             if folder:
@@ -227,5 +260,4 @@ Respond with ONLY a JSON object, no extra text, in exactly this shape:
             with open(self.cache_path, "w", encoding="utf-8") as f:
                 json.dump(cache, f, indent=2)
         except OSError:
-            print(f"Warning: could not write cache to {self.cache_path}. Continuing without cache.")
             pass
