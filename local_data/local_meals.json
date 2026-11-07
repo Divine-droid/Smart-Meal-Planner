@@ -1,0 +1,578 @@
+[
+  {
+    "id": "local-jollof-rice",
+    "name": "Jollof Rice",
+    "category": "Miscellaneous",
+    "cuisine": "Nigerian",
+    "instructions": "Blend the tomatoes, red bell peppers, scotch bonnet peppers and one onion until smooth. Pour into a pot and boil on medium heat for 15 to 20 minutes until the liquid reduces by half.\nSlice the remaining onion. Heat the oil in a large pot and fry the onion for 2 minutes. Add the tomato paste and fry for 5 minutes, stirring, until it darkens.\nPour in the cooked pepper mix and cook for about 15 minutes until thick and the oil rises to the top.\nAdd the stock, thyme, curry powder, bay leaves, seasoning cubes and salt. Bring to a boil.\nWash the rice until the water runs clear, add it to the pot and stir once. Cover with foil, then the lid, and cook on low heat for about 30 minutes.\nCheck that the rice is soft. If it is still hard, add a splash of hot water, cover and cook 5 more minutes. Fluff with a fork and serve with fried plantain or chicken.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Long-grain parboiled rice",
+        "measure": "3 cups"
+      },
+      {
+        "name": "Tomato",
+        "measure": "4"
+      },
+      {
+        "name": "Red bell pepper",
+        "measure": "3"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "2"
+      },
+      {
+        "name": "Onion",
+        "measure": "2"
+      },
+      {
+        "name": "Tomato paste",
+        "measure": "3 tbsp"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "1/2 cup"
+      },
+      {
+        "name": "Chicken stock",
+        "measure": "3 cups"
+      },
+      {
+        "name": "Thyme",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Curry powder",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Bay leaf",
+        "measure": "2"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      }
+    ]
+  },
+  {
+    "id": "local-egusi-soup",
+    "name": "Egusi Soup",
+    "category": "Beef",
+    "cuisine": "Nigerian",
+    "instructions": "Boil the beef with half the onion, one seasoning cube and some salt for about 45 minutes until tender. Keep the stock.\nBlend the tomatoes, scotch bonnet peppers and the other half of the onion. Heat the palm oil in a pot and fry the blend for about 10 minutes.\nMix the ground egusi with a little water into a thick paste. Add it to the pot in small lumps and leave it without stirring for 5 to 10 minutes.\nStir gently, then add the beef, 2 cups of the stock, smoked fish, ground crayfish, the second seasoning cube and salt. Cook for 15 minutes.\nAdd the chopped spinach and cook for 5 more minutes. Serve hot with pounded yam or eba.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Ground egusi",
+        "measure": "2 cups"
+      },
+      {
+        "name": "Palm oil",
+        "measure": "1/2 cup"
+      },
+      {
+        "name": "Spinach",
+        "measure": "300g"
+      },
+      {
+        "name": "Beef",
+        "measure": "500g"
+      },
+      {
+        "name": "Smoked fish",
+        "measure": "150g"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "2"
+      },
+      {
+        "name": "Tomato",
+        "measure": "2"
+      },
+      {
+        "name": "Ground crayfish",
+        "measure": "2 tbsp"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Beef stock",
+        "measure": "2 cups"
+      }
+    ]
+  },
+  {
+    "id": "local-moi-moi",
+    "name": "Moi Moi",
+    "category": "Side",
+    "cuisine": "Nigerian",
+    "instructions": "Soak the beans in water for 10 minutes, then rub them between your hands to remove the skins. Rinse until the skins float away.\nBlend the beans with the red bell peppers, scotch bonnet pepper and onion, adding a little warm water at a time, until smooth.\nPour into a bowl and stir in the oil, ground crayfish, seasoning cubes and salt. The batter should be thick like pancake batter.\nPour into oiled ramekins, foil cups or leaves and place a slice of boiled egg in each one.\nSteam in a pot with a little water at the bottom for 45 to 60 minutes, until firm in the middle. Serve with pap or custard.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Black-eyed beans",
+        "measure": "2 cups"
+      },
+      {
+        "name": "Red bell pepper",
+        "measure": "2"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "1"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "1/2 cup"
+      },
+      {
+        "name": "Ground crayfish",
+        "measure": "2 tbsp"
+      },
+      {
+        "name": "Egg",
+        "measure": "3"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Warm water",
+        "measure": "2 cups"
+      }
+    ]
+  },
+  {
+    "id": "local-efo-riro",
+    "name": "Efo Riro",
+    "category": "Beef",
+    "cuisine": "Nigerian",
+    "instructions": "Boil the beef with some of the onion, a seasoning cube and salt until tender, about 45 minutes. Keep the stock.\nBlend the red bell peppers, scotch bonnet peppers, tomatoes and the rest of the onion. Cook the blend in a pot until the water dries up.\nIn another pot, heat the palm oil, add the locust beans and fry for 2 minutes. Add the cooked pepper mix and fry for 10 minutes.\nAdd the beef, smoked fish, ground crayfish, the second seasoning cube, salt and a little stock. Cook for 10 minutes.\nStir in the chopped spinach and cook for 3 to 5 minutes. Do not overcook it, so it stays green. Serve with pounded yam, eba or rice.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Spinach",
+        "measure": "500g"
+      },
+      {
+        "name": "Palm oil",
+        "measure": "1/2 cup"
+      },
+      {
+        "name": "Red bell pepper",
+        "measure": "3"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "2"
+      },
+      {
+        "name": "Tomato",
+        "measure": "3"
+      },
+      {
+        "name": "Onion",
+        "measure": "2"
+      },
+      {
+        "name": "Locust beans",
+        "measure": "2 tbsp"
+      },
+      {
+        "name": "Beef",
+        "measure": "400g"
+      },
+      {
+        "name": "Smoked fish",
+        "measure": "150g"
+      },
+      {
+        "name": "Ground crayfish",
+        "measure": "2 tbsp"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      }
+    ]
+  },
+  {
+    "id": "local-akara",
+    "name": "Akara",
+    "category": "Starter",
+    "cuisine": "Nigerian",
+    "instructions": "Soak the beans for 10 minutes, then rub them to remove the skins and rinse until the skins float away.\nBlend the beans with the onion and scotch bonnet pepper, adding as little water as possible, to a thick, smooth paste.\nAdd salt and whisk the batter hard with a wooden spoon for about 5 minutes until it is light and fluffy.\nHeat the oil in a deep pan on medium heat. Scoop spoonfuls of batter into the oil and fry for 3 to 4 minutes on each side until golden brown.\nDrain on paper towels. Serve hot with pap or bread.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Black-eyed beans",
+        "measure": "2 cups"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "1"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "2 cups"
+      },
+      {
+        "name": "Water",
+        "measure": "1/2 cup"
+      }
+    ]
+  },
+  {
+    "id": "local-nigerian-fried-rice",
+    "name": "Nigerian Fried Rice",
+    "category": "Chicken",
+    "cuisine": "Nigerian",
+    "instructions": "Season the chicken with a seasoning cube and salt and boil it in the stock for about 20 minutes. Remove the chicken, shred or dice it and keep the stock.\nBoil the rice in the stock with the curry powder and thyme until almost soft. Drain and set aside.\nHeat the oil in a large pan and fry the onion for 2 minutes. Add the carrots, green beans and sweetcorn and stir-fry for 3 to 4 minutes so they stay crunchy.\nAdd the chicken and rice, mix well and season with the second seasoning cube and salt.\nCover and cook on low heat for 5 to 10 minutes to let the flavours blend. Serve with fried plantain or chicken.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Long-grain parboiled rice",
+        "measure": "3 cups"
+      },
+      {
+        "name": "Chicken breast",
+        "measure": "400g"
+      },
+      {
+        "name": "Carrot",
+        "measure": "2"
+      },
+      {
+        "name": "Green beans",
+        "measure": "150g"
+      },
+      {
+        "name": "Sweetcorn",
+        "measure": "100g"
+      },
+      {
+        "name": "Onion",
+        "measure": "2"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "1/4 cup"
+      },
+      {
+        "name": "Curry powder",
+        "measure": "2 tsp"
+      },
+      {
+        "name": "Thyme",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Chicken stock",
+        "measure": "4 cups"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      }
+    ]
+  },
+  {
+    "id": "local-chicken-pepper-soup",
+    "name": "Chicken Pepper Soup",
+    "category": "Chicken",
+    "cuisine": "Nigerian",
+    "instructions": "Wash the chicken and put it in a pot with the onion, grated ginger, garlic, seasoning cubes and salt.\nAdd the water and bring to a boil, then lower the heat and simmer for 20 minutes.\nBlend the scotch bonnet peppers with a little water and add them to the pot with the pepper soup spice.\nSimmer for another 15 to 20 minutes until the chicken is tender and the broth is rich and spicy.\nAdd the scent leaf or basil in the last 2 minutes. Serve hot as a starter or a light meal.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Chicken",
+        "measure": "800g"
+      },
+      {
+        "name": "Pepper soup spice",
+        "measure": "2 tbsp"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "2"
+      },
+      {
+        "name": "Ginger",
+        "measure": "1 tbsp"
+      },
+      {
+        "name": "Garlic",
+        "measure": "3 cloves"
+      },
+      {
+        "name": "Scent leaf",
+        "measure": "1 handful"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Water",
+        "measure": "6 cups"
+      }
+    ]
+  },
+  {
+    "id": "local-okra-soup",
+    "name": "Okra Soup",
+    "category": "Seafood",
+    "cuisine": "Nigerian",
+    "instructions": "Boil the beef with the onion, a seasoning cube and salt until tender, about 40 minutes. Keep the stock.\nChop the okra finely (or grate it for a more slimy soup).\nBlend the scotch bonnet peppers and add them to the pot with the beef, stock, palm oil, smoked fish and prawns. Simmer for 10 minutes.\nAdd the okra, ground crayfish, the second seasoning cube and salt. Cook for 5 to 7 minutes only, stirring gently, so the okra stays bright green.\nServe hot with eba, fufu or pounded yam.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Okra",
+        "measure": "300g"
+      },
+      {
+        "name": "Palm oil",
+        "measure": "1/4 cup"
+      },
+      {
+        "name": "Beef",
+        "measure": "300g"
+      },
+      {
+        "name": "Smoked fish",
+        "measure": "150g"
+      },
+      {
+        "name": "Prawn",
+        "measure": "150g"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "2"
+      },
+      {
+        "name": "Ground crayfish",
+        "measure": "2 tbsp"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "2"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Beef stock",
+        "measure": "2 cups"
+      }
+    ]
+  },
+  {
+    "id": "local-dodo-fried-plantain",
+    "name": "Dodo (Fried Plantain)",
+    "category": "Side",
+    "cuisine": "Nigerian",
+    "instructions": "Peel the ripe plantains and slice them diagonally into pieces about 1 cm thick.\nSprinkle the slices with salt and toss lightly.\nHeat the oil in a pan on medium-high heat. Fry the slices in batches for 2 to 3 minutes on each side until golden brown.\nDrain on paper towels and serve hot with jollof rice, beans or eggs.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Ripe plantain",
+        "measure": "3"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "1 cup"
+      },
+      {
+        "name": "Salt",
+        "measure": "1/2 tsp"
+      }
+    ]
+  },
+  {
+    "id": "local-yam-and-egg-sauce",
+    "name": "Yam and Egg Sauce",
+    "category": "Breakfast",
+    "cuisine": "Nigerian",
+    "instructions": "Peel the yam, cut it into pieces and rinse. Boil in salted water for 15 to 20 minutes until tender, then drain.\nChop or blend the tomatoes and scotch bonnet pepper. Slice the onion.\nHeat the oil in a pan, fry the onion for 2 minutes, then add the tomato mix and cook for about 10 minutes until the water dries and the sauce thickens.\nBeat the eggs with a pinch of salt, pour into the sauce and stir gently until just set.\nServe the egg sauce over the hot yam.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Yam",
+        "measure": "500g"
+      },
+      {
+        "name": "Egg",
+        "measure": "4"
+      },
+      {
+        "name": "Tomato",
+        "measure": "3"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Scotch bonnet pepper",
+        "measure": "1"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "1/4 cup"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      }
+    ]
+  },
+  {
+    "id": "local-suya",
+    "name": "Suya (Spicy Grilled Beef)",
+    "category": "Beef",
+    "cuisine": "Nigerian",
+    "instructions": "Slice the beef very thinly against the grain.\nMake the suya spice (yaji) by mixing the ground peanuts, ground ginger, garlic powder, cayenne pepper, paprika, seasoning cube and salt.\nCoat the beef with the oil and about three quarters of the spice. Marinate for at least 1 hour.\nThread the beef onto skewers. Grill or broil on high heat for 10 to 15 minutes, turning often, until cooked and slightly charred.\nSprinkle with the remaining spice and serve with sliced onion and tomato.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Beef sirloin",
+        "measure": "500g"
+      },
+      {
+        "name": "Ground peanuts",
+        "measure": "4 tbsp"
+      },
+      {
+        "name": "Ground ginger",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Garlic powder",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Cayenne pepper",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Paprika",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Seasoning cube",
+        "measure": "1"
+      },
+      {
+        "name": "Salt",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "3 tbsp"
+      },
+      {
+        "name": "Onion",
+        "measure": "1"
+      },
+      {
+        "name": "Tomato",
+        "measure": "1"
+      }
+    ]
+  },
+  {
+    "id": "local-puff-puff",
+    "name": "Puff Puff",
+    "category": "Dessert",
+    "cuisine": "Nigerian",
+    "instructions": "In a large bowl, mix the flour, sugar, yeast, salt and nutmeg.\nAdd the warm water gradually, mixing to a thick, smooth batter.\nCover the bowl and leave in a warm place for about 1 hour, until the batter doubles in size.\nHeat the oil on medium heat. Scoop small portions of batter with your hand or a spoon into the oil.\nFry for 4 to 5 minutes, turning often, until golden brown all over. Drain on paper towels and serve warm.",
+    "thumbnail": "",
+    "ingredients": [
+      {
+        "name": "Plain flour",
+        "measure": "3 cups"
+      },
+      {
+        "name": "Sugar",
+        "measure": "1/2 cup"
+      },
+      {
+        "name": "Yeast",
+        "measure": "2 tsp"
+      },
+      {
+        "name": "Salt",
+        "measure": "1/4 tsp"
+      },
+      {
+        "name": "Nutmeg",
+        "measure": "1/2 tsp"
+      },
+      {
+        "name": "Warm water",
+        "measure": "1 1/2 cups"
+      },
+      {
+        "name": "Vegetable oil",
+        "measure": "3 cups"
+      }
+    ]
+  }
+]

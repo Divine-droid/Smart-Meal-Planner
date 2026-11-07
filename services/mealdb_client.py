@@ -2,8 +2,11 @@
 """
 WHAT THIS FILE DOES
 -------------------
-Talks to the internet. MealDBClient sends HTTP requests to TheMealDB and turns the
-answers into Recipe objects. Nothing else in the app calls the API directly.
+Finds recipes. MealDBClient searches TWO places and combines the results:
+  1. LOCAL dishes  - Nigerian meals we wrote ourselves in local_data/local_meals.json
+  2. TheMealDB     - a free online recipe database (over the internet)
+Local dishes are listed first. If the internet is down, local dishes still work.
+Nothing else in the app talks to the API directly.
 
 THE API (free test key is "1", already in BASE)
 -----------------------------------------------
@@ -20,68 +23,94 @@ filter.php gives a SHORT list (no ingredients or instructions), so for each resu
 call lookup() to get the full recipe. We limit this to MAX_RESULTS meals so the app
 stays fast (one extra request per meal).
 
+ADDING A LOCAL DISH
+-------------------
+Open local_data/local_meals.json and copy an existing entry. Give it a unique "id"
+starting with "local-", and write the ingredients as {"name": ..., "measure": ...}
+using measures like "2 cups", "500g", "3 tbsp" or "1" (a count). Recipes should serve
+about 4 people, because the shopping list scales from 4.
+
 ERRORS (see exceptions.py)
 --------------------------
   APIRequestError   - no internet, timeout, server error, or unreadable reply
   MealNotFoundError - the request worked but nothing matched
   ValueError        - bad input from the caller (empty search, unknown mode)
-"""
 
+TRY IT QUICKLY in a Python shell:
+    from services.mealdb_client import MealDBClient
+    c = MealDBClient()
+    print([r.name for r in c.search("jollof", "name")])
+"""
 import json
-import importlib
-from typing import Any
-from urllib import parse as urlparse
-from urllib import request as urlrequest
+from pathlib import Path
+from typing import Any, Callable
 
 try:
+    import importlib
+
     requests = importlib.import_module("requests")
 except ModuleNotFoundError:
-    class _FallbackResponse:
-        def __init__(self, payload: bytes, status_code: int):
-            self._payload = payload
-            self.status_code = status_code
-            self.text = payload.decode("utf-8", errors="replace")
-
-        def raise_for_status(self):
-            if self.status_code >= 400:
-                raise _FallbackRequests.RequestException(f"HTTP {self.status_code}")
-
-        def json(self):
-            return json.loads(self.text)
-
-    class _FallbackRequests:
+    class _MissingRequests:
         class RequestException(Exception):
-            pass
+            """Fallback exception used when the requests package is unavailable."""
 
         @staticmethod
-        def get(url: str, params=None, timeout: int | None = None):
-            if params:
-                query = urlparse.urlencode(params)
-                separator = "&" if "?" in url else "?"
-                url = f"{url}{separator}{query}"
-            try:
-                with urlrequest.urlopen(url, timeout=timeout) as response:
-                    payload = response.read()
-                    status_code = getattr(response, "status", response.getcode())
-                    return _FallbackResponse(payload, status_code)
-            except Exception as exc:  # pragma: no cover - fallback only when requests is absent
-                raise _FallbackRequests.RequestException(str(exc)) from exc
+        def get(*args, **kwargs):
+            raise ModuleNotFoundError("The 'requests' package is required to use the MealDB client.")
 
-    requests = _FallbackRequests()
+    requests = _MissingRequests()
 
 from exceptions import APIRequestError, MealNotFoundError
 from models.recipe import Recipe
 
 TIMEOUT = 10        # seconds to wait before giving up on a request
 MAX_RESULTS = 6     # how many full recipes to fetch for ingredient/category searches
+LOCAL_MEALS_PATH = Path(__file__).resolve().parent.parent / "local_data" / "local_meals.json"
 
 
 class MealDBClient:
     BASE = "https://www.themealdb.com/api/json/v1/1"
 
+    def __init__(self, local_meals: list[Recipe] | None = None, local_path=LOCAL_MEALS_PATH):
+        """local_meals: a list of Recipe objects to use instead of the file (used by tests)."""
+        self._local = local_meals
+        self._local_path = Path(local_path)
+
+    # ------------------------------------------------------------ local dishes
+
+    def local_meals(self) -> list[Recipe]:
+        """Our own dishes as Recipe objects (read once from the JSON file)."""
+        if self._local is None:
+            self._local = self._read_local_file()
+        return self._local
+
+    def _read_local_file(self) -> list[Recipe]:
+        """Read local_meals.json. If it is missing or damaged, return [] (the app still works)."""
+        try:
+            with open(self._local_path, "r", encoding="utf-8") as f:
+                return [Recipe.from_dict(d) for d in json.load(f)]
+        except (OSError, ValueError, KeyError, TypeError):
+            return []
+
+    @staticmethod
+    def _merge(local: list[Recipe], api_call: Callable[[], list[Recipe]]) -> list[Recipe]:
+        """Local matches first, then the API results (without duplicates).
+
+        If the internet request fails but we already have local matches, we show those
+        instead of an error. With no local matches the error is raised as normal.
+        """
+        try:
+            remote = api_call()
+        except APIRequestError:
+            if not local:
+                raise
+            remote = []
+        known = {r.id for r in local}
+        return local + [r for r in remote if r.id not in known]
+
     # ------------------------------------------------------------ low level
 
-    def _get(self, endpoint: str, **params) -> list[Any]:
+    def _get(self, endpoint: str, **params: str) -> list[dict[str, Any]]:
         """The ONE place that makes HTTP requests. All other methods use it.
 
         Returns the list under the "meals" key, or [] when the API says null.
@@ -111,7 +140,7 @@ class MealDBClient:
 
     def _recipes_from_short_list(self, short_meals: list[dict[str, Any]]) -> list[Recipe]:
         """filter.php only returns id/name/thumb. Fetch the full Recipe for each one."""
-        recipes = []
+        recipes: list[Recipe] = []
         for meal in short_meals[:MAX_RESULTS]:
             try:
                 recipes.append(self.lookup(meal["idMeal"]))
@@ -122,47 +151,67 @@ class MealDBClient:
     # ------------------------------------------------------------ searches
 
     def search_by_name(self, name: str) -> list[Recipe]:
-        """search.php?s=<name> -> list of full Recipe objects."""
+        """Local dishes whose name contains the text + TheMealDB's search.php?s=<name>."""
         name = self._require(name, "meal name")
-        meals = self._get("search.php", s=name)
-        if not meals:
+        wanted = name.lower()
+        local = [r for r in self.local_meals() if wanted in r.name.lower()]
+        results = self._merge(
+            local, lambda: [Recipe.from_api(m) for m in self._get("search.php", s=name)]
+        )
+        if not results:
             raise MealNotFoundError(
-                f"No meals found with the name '{name}'. TheMealDB's free database is limited, so try "
-                "another spelling, or search by ingredient or category instead."
+                f"No meals found with the name '{name}'. Try another spelling, "
+                "or search by ingredient or category instead."
             )
-        return [Recipe.from_api(m) for m in meals]
+        return results
 
     def search_by_ingredient(self, ingredient: str) -> list[Recipe]:
-        """filter.php?i=<ingredient> -> full Recipes that use this main ingredient."""
+        """Local dishes that use the ingredient + TheMealDB's filter.php?i=<ingredient>."""
         ingredient = self._require(ingredient, "ingredient")
+        wanted = ingredient.lower()
+        local = [r for r in self.local_meals()
+                 if any(wanted in i.name.lower() for i in r.ingredients)]
         # The site writes multi-word ingredients with underscores: "chicken_breast"
-        api_name = ingredient.lower().replace(" ", "_")
-        short_meals = self._get("filter.php", i=api_name)
-        recipes = self._recipes_from_short_list(short_meals)
-        if not recipes:
+        api_name = wanted.replace(" ", "_")
+        results = self._merge(
+            local, lambda: self._recipes_from_short_list(self._get("filter.php", i=api_name))
+        )
+        if not results:
             raise MealNotFoundError(f"No meals found with the ingredient '{ingredient}'.")
-        return recipes
+        return results
 
     def search_by_category(self, category: str) -> list[Recipe]:
-        """filter.php?c=<category> -> full Recipes in this category (e.g. Seafood)."""
+        """Local dishes in this category or cuisine (e.g. "Nigerian") + TheMealDB's filter.php?c=."""
         category = self._require(category, "category")
-        short_meals = self._get("filter.php", c=category.capitalize())
-        recipes = self._recipes_from_short_list(short_meals)
-        if not recipes:
+        wanted = category.lower()
+        local = [r for r in self.local_meals() if wanted in (r.category.lower(), r.cuisine.lower())]
+        results = self._merge(
+            local,
+            lambda: self._recipes_from_short_list(self._get("filter.php", c=category.capitalize())),
+        )
+        if not results:
             raise MealNotFoundError(f"No meals found in the category '{category}'.")
-        return recipes
+        return results
 
     def lookup(self, meal_id: str) -> Recipe:
-        """lookup.php?i=<id> -> one full Recipe."""
+        """One full Recipe by id. Local ids (they start with "local-") need no internet."""
+        for recipe in self.local_meals():
+            if recipe.id == meal_id:
+                return recipe
         meals = self._get("lookup.php", i=meal_id)
         if not meals:
             raise MealNotFoundError(f"No meal found with id '{meal_id}'.")
         return Recipe.from_api(meals[0])
 
     def list_categories(self) -> list[str]:
-        """All category names, e.g. ["Beef", "Chicken", ...]. Handy for a dropdown in the UI."""
+        """Category names for the dropdown: TheMealDB's, plus our local cuisines (e.g. "Nigerian")."""
         meals = self._get("list.php", c="list")
-        return [m["strCategory"] for m in meals if m.get("strCategory")]
+        categories = [m["strCategory"] for m in meals if m.get("strCategory")]
+        known = {c.lower() for c in categories}
+        for cuisine in sorted({r.cuisine for r in self.local_meals() if r.cuisine}):
+            if cuisine.lower() not in known:
+                categories.append(cuisine)
+        return categories
 
     # ------------------------------------------------------------ the one the UI calls
 

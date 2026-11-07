@@ -27,10 +27,25 @@ function, the matching feature starts working with no change to this file.
 
 RUN IT:  streamlit run app.py
 """
+import importlib
+import importlib.util
 from contextlib import contextmanager
 from typing import Any
 
-import streamlit as st  # pyright: ignore[reportMissingImports]
+
+class _MissingStreamlit:
+    """Fallback used when Streamlit is not installed in the current Python environment."""
+
+    def __getattr__(self, name):
+        raise ModuleNotFoundError(
+            "streamlit is not installed. Install the project dependencies first, e.g. `pip install -r requirements.txt`."
+        )
+
+
+if importlib.util.find_spec("streamlit") is not None:
+    st = importlib.import_module("streamlit")
+else:
+    st = _MissingStreamlit()
 
 from exceptions import InvalidServingsError, MealNotFoundError, MealPlannerError
 from models.recipe import Recipe
@@ -84,7 +99,7 @@ def init_state():
 def get_ai() -> AIHelper:
     """Create the Gemini helper the first time it is needed (it needs the API key)."""
     if "ai_helper" not in st.session_state:
-        st.session_state.ai_helper = AIHelper(model="gemini-3.8-flash")
+        st.session_state.ai_helper = AIHelper()
     return st.session_state.ai_helper
 
 
@@ -104,10 +119,8 @@ def get_categories() -> list[str]:
 def load_favourites() -> list[Recipe]:
     """Saved favourite recipes as Recipe objects ([] if none or the file can't be read)."""
     try:
-        raw: list[dict[str, object]] = storage.load_json(FAVOURITES_FILE, default=[]) or []
-        if not isinstance(raw, list):
-            return []
-        return [Recipe.from_dict(d) for d in raw if isinstance(d, dict)]
+        raw = storage.load_json(FAVOURITES_FILE, default=[])
+        return [Recipe.from_dict(d) for d in (raw or [])]
     except (NotImplementedError, KeyError, TypeError):
         return []
 
@@ -176,10 +189,7 @@ def show_recipe(recipe: Recipe, ctx: str, planner: MealPlanner, fav_ids: set[str
             if st.button("Simplify with AI", key=f"{key}_ai"):
                 with guarded("The AI helper"):
                     with st.spinner("Asking Gemini..."):
-                        enhance_recipe = getattr(get_ai(), "enhance_recipe", None)
-                        if not callable(enhance_recipe):
-                            raise NotImplementedError
-                        st.session_state.ai[recipe.id] = enhance_recipe(recipe)
+                        st.session_state.ai[recipe.id] = get_ai().enhance_recipe(recipe)
 
         with col_plan:
             day = st.selectbox("Day", DAYS, key=f"{key}_day", label_visibility="collapsed")
@@ -206,7 +216,8 @@ def show_recipe(recipe: Recipe, ctx: str, planner: MealPlanner, fav_ids: set[str
             show_ai_result(st.session_state.ai[recipe.id])
 
         st.markdown("**Original instructions**")
-        st.markdown((recipe.instructions or "No instructions provided.").replace("\r\n", "\n\n"))
+        st.markdown((recipe.instructions or "No instructions provided.")
+                    .replace("\r\n", "\n").replace("\n", "\n\n"))
 
 
 # ---------------------------------------------------------------- page
@@ -242,6 +253,7 @@ tab_search, tab_plan, tab_shop, tab_fav = st.tabs(["Search", "Meal plan", "Shopp
 # ---- Search tab ------------------------------------------------------------
 with tab_search:
     mode = st.radio("Search by", ["name", "ingredient", "category"], horizontal=True, key="search_mode")
+    st.caption("Includes Nigerian dishes: try 'jollof', 'egusi' or the category 'Nigerian'.")
     with st.form("search_form"):
         if mode == "category":
             categories = get_categories()
