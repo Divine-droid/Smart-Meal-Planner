@@ -61,8 +61,8 @@ class ShoppingListGenerator:
             for ingredient in ingredients:
 
                 # Get ingredient name and measurement
-                raw_name = ingredient.get("name", "")
-                raw_measure = ingredient.get("measure", "")
+                raw_name = ingredient.name
+                raw_measure = ingredient.measure
 
                 if not raw_name.strip():
                     continue
