@@ -72,8 +72,8 @@ Smart-Meal-Planner/
  local_data/
     local_meals.json    Our Nigerian dishes
     images/             Pictures for the local dishes (optional)
- data/                   Saved plans, favourites, shopping lists (created at run time)
- tests/                  pytest tests
+ data/                  Saved plans, favourites, shopping lists (created at run time)
+ tests/                 pytest tests
 
 
 ## How it works
@@ -87,11 +87,11 @@ Save buttons : storage.save_json() / storage.save_shopping_csv()
 
 ## Python concepts used
 
-| Concept | Where it is used 
-| *File handling* | `storage.py` saves and loads JSON and CSV. `ai_helper.py` keeps a JSON cache. `mealdb_client.py` reads `local_meals.json`. |
-| *Exception handling* | Custom exceptions in `exceptions.py`. `MealDBClient._get()` handles failed requests. `AIHelper` retries temporary Gemini errors. `guarded()` in `app.py` turns every error into a friendly message. |
-| *Regular expressions* | `parsing.py` extracts quantities and units from measures such as "2 tbsp", "500g" and "1 1/2 cups", validates the serving size, and cleans ingredient names. |
-| *OOP* | The `Ingredient` and `Recipe` data classes (with `from_api` and `from_dict` class methods), and the `MealDBClient`, `AIHelper`, `MealPlanner` and `ShoppingListGenerator` classes. |
+Concept / Where it is used 
+File handling : `storage.py` saves and loads JSON and CSV. `ai_helper.py` keeps a JSON cache. `mealdb_client.py` reads `local_meals.json`.
+Exception handling: Custom exceptions in `exceptions.py`. `MealDBClient._get()` handles failed requests. `AIHelper` retries temporary Gemini errors. `guarded()` in `app.py` turns every error into a friendly message. 
+Regular expressions: `parsing.py` extracts quantities and units from measures such as "2 tbsp", "500g" and "1 1/2 cups", validates the serving size, and cleans ingredient names. 
+OOP : The `Ingredient` and `Recipe` data classes (with `from_api` and `from_dict` class methods), and the `MealDBClient`, `AIHelper`, `MealPlanner` and `ShoppingListGenerator` classes.
 
 ## Local (Nigerian) dishes
 Created this file because MealDb API does not have Nigerian local dishes, it only has international dishes. The file contains a collection of 12 popular Nigerian dishes. 
@@ -119,16 +119,16 @@ Note: not all the tests are complete some may fail due to that reason.
 
 ## Troubleshooting
 
-- *"The Gemini model ... is not available":* set `GEMINI_MODEL` in `.env` to a current model name from Google AI Studio.
-- *"Gemini is very busy":* this is temporary. Wait a few seconds and press the button again.
-- *"Missing GEMINI_API_KEY":* create `.env` from `.env.example` and add your key.
-- *"No meals found":* try another spelling, or search by ingredient or category.
-- *`ModuleNotFoundError`:* run commands from the project folder and run `pip install -r requirements.txt` again.
-- *A change does not appear:* stop Streamlit with Ctrl+C and run it again.
+- "The Gemini model ... is not available": set `GEMINI_MODEL` in `.env` to a current model name from Google AI Studio.
+- "Gemini is very busy": this is temporary. Wait a few seconds and press the button again.
+- "Missing GEMINI_API_KEY": create `.env` from `.env.example` and add your key.
+- "No meals found": try another spelling, or search by ingredient or category.
+- `ModuleNotFoundError`: run commands from the project folder and run `pip install -r requirements.txt` again.
+- A change does not appear: stop Streamlit with Ctrl+C and run it again.
 
 ## Team
 
-| Name / Contribution 
+Name / Contribution 
 Divine (team lead): Project setup, `Recipe` model, `MealDBClient`, `AIHelper`, Streamlit UI, local dishes 
 Khalilinc - `storage.py` - Save buttons 
 Jennifer - `shopping.py` - Creates a shopping list for the searched meal
